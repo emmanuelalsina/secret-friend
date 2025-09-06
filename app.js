@@ -72,6 +72,11 @@ function agregarAmigo(){
 
     // Agrega el nombre limpio a la lista global de amigos
     listaAmigos.push(nombre);
+
+    let limpiarNombre = document.getElementById("amigo")
+    limpiarNombre.value = "";
+
+    console.log("Lista actualizada:", listaAmigos); //quieres ver qué nombre se agregó y cómo queda la lista cada vez que se llama la función.
     
     // Llama a la función que se encarga de mostrar la lista completa en la página
     listaVisible()
@@ -85,16 +90,23 @@ function agregarAmigo(){
 function listaVisible(){
     //getElementById() es más seguro y explícito, porque apunta directamente al <ul> que quieres manipular,
     // sin depender del orden de los elementos en el HTML.
-    let limpiarLista = getElementById("listaAmigos")
+    let limpiarLista = document.getElementById("listaAmigos")
+    //inner.HTML cambia el contenido del elemento HTML
     limpiarLista.innerHTML = "";
-    
-    ul =document.getElementById("listaAmigos")
-    for (let i = 0 ; i < listaAmigos.length; i ++){
-        let amigo = document.createElement("li");
-        let nombreAmigo =listaAmigos[i].textContent;
 
-        ul.appendChild(amigo)
-        //or listaAmigos.push(li); esto es para agregar en un array de js no en contenedor DOM
+    //seleccionas el elemnto html por su id 
+    let ulListaAmigos = document.getElementById("listaAmigos")
+    for (let i = 0 ; i < listaAmigos.length; i ++){
+        //generas un nuevo elemento de lista en cada iteración del bucle.
+        let amigoLi = document.createElement("li");
+ //El <li> (amigo) debe mostrar lo que hay en:                       
+        amigoLi.textContent = listaAmigos[i] //significa: “dame el elemento del array (listaAmigos) en esa posición”.
+        console.log("Creando <li> para:", amigoLi.textContent); //er cada elemento <li> que estás generando antes de agregarlo al <ul>.
+
+        //ul → referencia directa al elemento <ul> del DOM (el contenedor donde se va a pintar la lista).//
+        //Por eso, al hacer ul.appendChild(amigo) el <li> realmente aparece en la página.
+        ulListaAmigos.appendChild(amigoLi)
+        //listaAmigos.push(li); esto es para agregar en un array de js no en contenedor DOM
         
     }
     return listaAmigos
@@ -103,7 +115,40 @@ function listaVisible(){
 
 
 function sortearAmigo(){
-    listaNombresAmigos.Math.random()
-    console.log()
+
+    let limpiarLista = document.getElementById("resultado")
+    //inner.HTML cambia el contenido del elemento HTML
+    limpiarLista.innerHTML = "";
+
+    /*primero usaria el Math.random() y lo multiplicaría por listaAmigos.length para escalarlo al tamaño de la lista,
+     pero como Math.random() genera un número decimal aleatorio,
+      todo eso lo encapsularia en un Math.floor() para tranformarlo a entero*/
+    //numeroAleatorio apunta a la posición dentro del array
+    //genera un entero válido de 0 a length-1
+    let numeroAleatorio = Math.floor(Math.random() * listaAmigos.length )
+
+    console.log("Número aleatorio generado:", numeroAleatorio); //para verificar que estás generando un índice aleatorio válido.
+    
+    
+    
+    
+    //aquí seleccionas el <ul> donde vas a poner el resultado. Correcto, es tu "contenedor".
+    ulresultado = document.getElementById("resultado")
+    //generas un nuevo <li>, que es el "papelito" donde vas a escribir el nombre del ganador.
+    //Muy buena idea, así no insertas texto suelto sino un nodo de lista (nodo = cada pieza/elemento en el DOM, como <li>, <div>, etc).
+    let amigoSecreto = document.createElement("li")
+    //al usar listaAmigos[numeroAleatorio] estás accediendo al valor que está en esa posición,
+    // que en este caso es el nombre del amigo secreto
+    //aquí le pones al <li> el nombre sorteado.
+    //Es decir, ya no es un <li> vacío, ahora contiene el texto del ganador.
+    amigoSecreto.textContent = listaAmigos[numeroAleatorio]
+
+    console.log("Amigo secreto seleccionado:", amigoSecreto.textContent); //confirmar que el nombre sorteado coincide con la posición aleatoria.
+
+    //finalmente, pegas ese <li> dentro del <ul id="resultado">, y entonces se ve en la página.
+    ulresultado.appendChild(amigoSecreto)
+    
+    
+
 
 }
