@@ -21,13 +21,16 @@ se seleccionará aleatoriamente un nombre de la lista y se mostrará en la pági
 
 
 let listaAmigos = []
+let inputNombre = document.getElementById("amigo")
+let ulListaAmigos = document.getElementById("listaAmigos")
+let ulresultado = document.getElementById("resultado")
 
 
 function validarCampoDeTexto(){
     // document.getElementById("amigo") → busca en la página el input con id "amigo"
     // .value → obtiene el texto que escribió el usuario en ese input
     // .trim() → elimina los espacios al inicio y al final del texto para evitar errores
-    let texto =document.getElementById("amigo").value.trim()
+    let texto =inputNombre.value.trim()
 
     // .length → obtiene la cantidad de caracteres del texto
     // Si después de quitar los espacios no hay caracteres, es un input vacío
@@ -68,13 +71,25 @@ function agregarAmigo(){
     // Obtiene el texto que el usuario escribió
     // Elimina espacios al inicio y al final para evitar entradas vacías o con espacios extra
     // Guarda el resultado limpio en la variable 'nombre', lista para agregar a la lista global
-    let nombre = document.getElementById("amigo").value.trim()
+    let nombre = inputNombre.value.toUpperCase().trim();
+
+    //Por qué ahí: Porque queremos que la comparación de duplicados sea insensible a mayúsculas/minúsculas,
+    //pero el input original ya limpio (trim) se sigue usando para mostrarlo en la lista.
+    
+
+
+    //Verifica si el nombre ya se ingresó y lanza una alerta 
+    //return evita que el código se siga ejecutando --> evitando duplicados
+    if (listaAmigos.includes(nombre)){
+        alert("Nombre ya ingresado,prueba con otro");
+        return ;
+    }
 
     // Agrega el nombre limpio a la lista global de amigos
     listaAmigos.push(nombre);
 
-    let limpiarNombre = document.getElementById("amigo")
-    limpiarNombre.value = "";
+    //linpia el campo de texto cada que se agrega un nombre a la lisya
+    inputNombre.value = "";
 
     console.log("Lista actualizada:", listaAmigos); //quieres ver qué nombre se agregó y cómo queda la lista cada vez que se llama la función.
     
@@ -88,21 +103,15 @@ function agregarAmigo(){
 
 //actualizar la lista visible debajo del input (limpiar el contenedor y volver a pintar los ítems)
 function listaVisible(){
-    //getElementById() es más seguro y explícito, porque apunta directamente al <ul> que quieres manipular,
-    // sin depender del orden de los elementos en el HTML.
-    let limpiarLista = document.getElementById("listaAmigos")
+    
     //inner.HTML cambia el contenido del elemento HTML
-    limpiarLista.innerHTML = "";
+    limpiarContenedor(ulListaAmigos)
 
-    //seleccionas el elemnto html por su id 
-    let ulListaAmigos = document.getElementById("listaAmigos")
+    
     for (let i = 0 ; i < listaAmigos.length; i ++){
         //generas un nuevo elemento de lista en cada iteración del bucle.
-        let amigoLi = document.createElement("li");
- //El <li> (amigo) debe mostrar lo que hay en:                       
-        amigoLi.textContent = listaAmigos[i] //significa: “dame el elemento del array (listaAmigos) en esa posición”.
-        console.log("Creando <li> para:", amigoLi.textContent); //er cada elemento <li> que estás generando antes de agregarlo al <ul>.
-
+        
+        let amigoLi = crearElementoLista(listaAmigos[i])
         //ul → referencia directa al elemento <ul> del DOM (el contenedor donde se va a pintar la lista).//
         //Por eso, al hacer ul.appendChild(amigo) el <li> realmente aparece en la página.
         ulListaAmigos.appendChild(amigoLi)
@@ -116,9 +125,15 @@ function listaVisible(){
 
 function sortearAmigo(){
 
-    let limpiarLista = document.getElementById("resultado")
+   
     //inner.HTML cambia el contenido del elemento HTML
-    limpiarLista.innerHTML = "";
+    limpiarContenedor(ulresultado)
+
+    //evita que se sroteé con una lista vacía
+    if (listaAmigos.length == 0){
+        alert("No has ingresado ningún nombre")
+        return ;
+    }
 
     /*primero usaria el Math.random() y lo multiplicaría por listaAmigos.length para escalarlo al tamaño de la lista,
      pero como Math.random() genera un número decimal aleatorio,
@@ -130,19 +145,13 @@ function sortearAmigo(){
     console.log("Número aleatorio generado:", numeroAleatorio); //para verificar que estás generando un índice aleatorio válido.
     
     
-    
-    
-    //aquí seleccionas el <ul> donde vas a poner el resultado. Correcto, es tu "contenedor".
-    ulresultado = document.getElementById("resultado")
     //generas un nuevo <li>, que es el "papelito" donde vas a escribir el nombre del ganador.
     //Muy buena idea, así no insertas texto suelto sino un nodo de lista (nodo = cada pieza/elemento en el DOM, como <li>, <div>, etc).
-    let amigoSecreto = document.createElement("li")
+    let amigoSecreto = crearElementoLista(listaAmigos[numeroAleatorio])
     //al usar listaAmigos[numeroAleatorio] estás accediendo al valor que está en esa posición,
     // que en este caso es el nombre del amigo secreto
     //aquí le pones al <li> el nombre sorteado.
     //Es decir, ya no es un <li> vacío, ahora contiene el texto del ganador.
-    amigoSecreto.textContent = listaAmigos[numeroAleatorio]
-
     console.log("Amigo secreto seleccionado:", amigoSecreto.textContent); //confirmar que el nombre sorteado coincide con la posición aleatoria.
 
     //finalmente, pegas ese <li> dentro del <ul id="resultado">, y entonces se ve en la página.
@@ -150,5 +159,24 @@ function sortearAmigo(){
     
     
 
+
+}
+
+// recuerda que usa innerHTML porque se aplica sobre un nodo del DOM
+function limpiarContenedor(elemento){
+   elemento.innerHTML = "";
+
+}
+
+
+
+
+function crearElementoLista(texto){
+    
+    let elemento = document.createElement("li")
+
+    elemento.textContent= texto
+    
+    return elemento
 
 }
