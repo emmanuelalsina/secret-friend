@@ -19,18 +19,19 @@ Sorteo aleatorio: Al hacer clic en el botón "Sortear Amigo",
 se seleccionará aleatoriamente un nombre de la lista y se mostrará en la página. */
 
 
-
+// Array global que almacena todos los nombres ingresados
 let listaAmigos = []
-let inputNombre = document.getElementById("amigo")
-let ulListaAmigos = document.getElementById("listaAmigos")
-let ulresultado = document.getElementById("resultado")
 
+// Referencias a los elementos del DOM
+let inputNombre = document.getElementById("amigo") // Input donde el usuario escribe el nombre
+let ulListaAmigos = document.getElementById("listaAmigos") // <ul> que mostrará la lista de amigos
+let ulresultado = document.getElementById("resultado") // <ul> que mostrará el resultado del sorteo
 
+// Función: validarCampoDeTexto
+// Objetivo: Comprobar si el usuario escribió algo en el input antes de agregarlo
 function validarCampoDeTexto(){
-    // document.getElementById("amigo") → busca en la página el input con id "amigo"
-    // .value → obtiene el texto que escribió el usuario en ese input
-    // .trim() → elimina los espacios al inicio y al final del texto para evitar errores
-    let texto =inputNombre.value.trim()
+    
+    let texto =inputNombre.value.trim() // Quita espacios al inicio y final
 
     // .length → obtiene la cantidad de caracteres del texto
     // Si después de quitar los espacios no hay caracteres, es un input vacío
@@ -38,7 +39,8 @@ function validarCampoDeTexto(){
         // alert() → muestra una ventana emergente para avisar al usuario
         alert("Ingresa un nombre válido");
         // return false → indica que la validación falló
-        return false;
+        return false;// Señal para detener la ejecución de agregarAmigo
+
         // ❓ ¿Por qué esta función devuelve "false"? 
         // Porque necesitamos una señal clara para el programa sobre si el dato es usable.
         // - true → "todo bien, continúa"
@@ -52,7 +54,8 @@ function validarCampoDeTexto(){
 
 
 
-// Función para agregar un amigo a la lista global
+// Función: agregarAmigo
+// Objetivo: Agregar un nombre a la lista global y actualizar la lista visible en la página
 function agregarAmigo(){
     
     // Llama a la función que valida si el campo de texto tiene un valor
@@ -71,6 +74,7 @@ function agregarAmigo(){
     // Obtiene el texto que el usuario escribió
     // Elimina espacios al inicio y al final para evitar entradas vacías o con espacios extra
     // Guarda el resultado limpio en la variable 'nombre', lista para agregar a la lista global
+    //opcionalmente en mayúsculas para comparar duplicados
     let nombre = inputNombre.value.toUpperCase().trim();
 
     //Por qué ahí: Porque queremos que la comparación de duplicados sea insensible a mayúsculas/minúsculas,
@@ -88,7 +92,7 @@ function agregarAmigo(){
     // Agrega el nombre limpio a la lista global de amigos
     listaAmigos.push(nombre);
 
-    //linpia el campo de texto cada que se agrega un nombre a la lisya
+    //limpia el campo de texto cada que se agrega un nombre a la lista
     inputNombre.value = "";
 
     console.log("Lista actualizada:", listaAmigos); //quieres ver qué nombre se agregó y cómo queda la lista cada vez que se llama la función.
@@ -115,7 +119,6 @@ function listaVisible(){
         //ul → referencia directa al elemento <ul> del DOM (el contenedor donde se va a pintar la lista).//
         //Por eso, al hacer ul.appendChild(amigo) el <li> realmente aparece en la página.
         ulListaAmigos.appendChild(amigoLi)
-        //listaAmigos.push(li); esto es para agregar en un array de js no en contenedor DOM
         
     }
     return listaAmigos
@@ -127,7 +130,7 @@ function sortearAmigo(){
 
    
     //inner.HTML cambia el contenido del elemento HTML
-    limpiarContenedor(ulresultado)
+    limpiarContenedor(ulresultado) //limpia resultados anteriores
 
     //evita que se sroteé con una lista vacía
     if (listaAmigos.length == 0){
@@ -173,10 +176,10 @@ function limpiarContenedor(elemento){
 
 function crearElementoLista(texto){
     
-    let elemento = document.createElement("li")
+    let elemento = document.createElement("li") // Crear <li>
 
-    elemento.textContent= texto
+    elemento.textContent= texto   // Asignar el texto
     
-    return elemento
+    return elemento  // Retornar el elemento listo para usar
 
 }
